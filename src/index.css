@@ -1,0 +1,172 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    font-family: 'Lato', sans-serif;
+    font-size: 1.0625rem;
+    line-height: 1.75;
+    background-color: #FFF8F1;
+    color: #2E2E2E;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  h1, h2, h3, h4, h5 {
+    font-family: 'Playfair Display', serif;
+    line-height: 1.2;
+  }
+  p {
+    text-wrap: pretty;
+  }
+  blockquote {
+    font-family: 'Cormorant Garamond', serif;
+  }
+}
+
+@layer components {
+  /* Premium button system: refined type, gold accent line, subtle lift */
+  .btn-premium {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-family: 'League Spartan', sans-serif;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border-radius: 0.75rem;
+    overflow: hidden;
+    isolation: isolate;
+    transition:
+      transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+      background-color 0.35s ease,
+      color 0.35s ease,
+      border-color 0.35s ease,
+      box-shadow 0.35s ease;
+  }
+  .btn-premium::after {
+    content: '';
+    position: absolute;
+    left: 1.25rem;
+    right: 1.25rem;
+    bottom: 0.45rem;
+    height: 1px;
+    background: #D4A017;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+    pointer-events: none;
+  }
+  .btn-premium:hover {
+    transform: translateY(-2px);
+  }
+  .btn-premium:hover::after,
+  .btn-premium:focus-visible::after {
+    transform: scaleX(1);
+  }
+  .btn-premium:active {
+    transform: translateY(0) scale(0.98);
+    transition-duration: 0.12s;
+  }
+  .btn-premium:focus-visible {
+    outline: 2px solid #D4A017;
+    outline-offset: 3px;
+  }
+  .btn-premium:disabled {
+    opacity: 0.6;
+    transform: none;
+    cursor: not-allowed;
+  }
+  .btn-premium:disabled::after {
+    transform: scaleX(0);
+  }
+
+  .eyebrow {
+    font-family: 'League Spartan', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3em;
+    color: #bf8f12;
+  }
+
+  .gold-rule {
+    display: block;
+    width: 3rem;
+    height: 1px;
+    background: linear-gradient(90deg, #D4A017, rgba(212, 160, 23, 0));
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  .glass {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+  .glass-dark {
+    background: rgba(91, 44, 111, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+  .scrollbar-none {
+    scrollbar-width: none;
+  }
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #f7f3f9;
+}
+::-webkit-scrollbar-thumb {
+  background: #9c70ad;
+  border-radius: 5px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #5B2C6F;
+}
+
+.animate-on-scroll {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+}
+
+.animate-on-scroll.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-on-scroll {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .animate-fade-up,
+  .animate-fade-in,
+  .animate-scale-in,
+  .animate-gold-line,
+  .animate-letter-in {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .btn-premium,
+  .btn-premium::after {
+    transition: none;
+  }
+}
