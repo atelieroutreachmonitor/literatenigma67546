@@ -66,7 +66,7 @@ export function DonatePage() {
               </div>
             </div>
 
-            <div className="animate-on-scroll">
+            <div>
               {status === 'success' ? (
                 <div className="bg-white rounded-3xl p-10 border border-plum-100 shadow-sm text-center">
                   <CheckCircle2 className="w-16 h-16 text-gold-500 mx-auto mb-4" />
