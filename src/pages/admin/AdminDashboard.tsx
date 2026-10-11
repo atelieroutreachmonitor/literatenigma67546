@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 import {
   LayoutDashboard, BookOpen, GraduationCap, FileText, Newspaper,
   ShoppingBag, Users, Handshake, Mail, Heart, UserPlus, Briefcase, Phone,
-  LogOut, Menu, X, ChevronRight, Bell, CreditCard, Quote, Images, Image as ImageIcon
+  LogOut, Menu, X, ChevronRight, Bell, CreditCard, Quote, Images, Image as ImageIcon,
+  Crown, FormText, Mail as MailIcon
 } from 'lucide-react';
 import { useAuth } from '@/lib/auth';
 import { useRouter } from '@/lib/router';
@@ -13,15 +14,17 @@ import type {
   NewsletterSubscriber, JoinSubmission, VolunteerSubmission, PartnerSubmission,
   ContactSubmission, Donation, CourseApplication, MerchOrder,
   PaymentInfo, PaymentSubmission, Testimonial, GalleryEvent, GalleryPhoto,
+  Patron, PatronSubmission, CustomForm, CustomFormSubmission,
 } from '@/lib/types';
 
 type Section =
   | 'overview'
-  | 'programs' | 'courses' | 'cases' | 'blog' | 'merch' | 'merch_images' | 'community' | 'partners'
+  | 'programs' | 'courses' | 'cases' | 'blog' | 'merch' | 'community' | 'partners'
   | 'testimonials' | 'gallery'
   | 'newsletter' | 'join' | 'volunteer' | 'partner_sub' | 'contact' | 'donations'
   | 'course_app' | 'merch_orders' | 'payment_submissions'
-  | 'payment';
+  | 'payment'
+  | 'patrons' | 'patron_sub' | 'custom_forms' | 'custom_form_subs';
 
 interface NavGroup {
   label: string;
@@ -41,11 +44,11 @@ const navGroups: NavGroup[] = [
       { id: 'cases', label: 'Cases', icon: FileText, table: 'cases' },
       { id: 'blog', label: 'Blog Posts', icon: Newspaper, table: 'blog_posts' },
       { id: 'merch', label: 'Merch', icon: ShoppingBag, table: 'merch' },
-      { id: 'merch_images', label: 'Merch Images', icon: ImageIcon, table: 'merch_images' },
       { id: 'community', label: 'Community', icon: Users, table: 'community_posts' },
       { id: 'partners', label: 'Partners', icon: Handshake, table: 'partners' },
       { id: 'testimonials', label: 'Testimonials', icon: Quote, table: 'testimonials' },
       { id: 'gallery', label: 'Gallery', icon: Images, table: 'gallery_events' },
+      { id: 'patrons', label: 'Patrons & Trustees', icon: Crown, table: 'patrons' },
     ],
   },
   {
@@ -60,12 +63,15 @@ const navGroups: NavGroup[] = [
       { id: 'course_app', label: 'Course Applications', icon: GraduationCap, table: 'course_applications' },
       { id: 'merch_orders', label: 'Merch Orders', icon: ShoppingBag, table: 'merch_orders' },
       { id: 'payment_submissions', label: 'Payment Submissions', icon: CreditCard, table: 'payment_submissions' },
+      { id: 'patron_sub', label: 'Patron Applications', icon: Crown, table: 'patron_submissions' },
+      { id: 'custom_form_subs', label: 'Custom Form Responses', icon: FormText, table: 'custom_form_submissions' },
     ],
   },
   {
     label: 'Settings',
     items: [
       { id: 'payment', label: 'Payment Info', icon: CreditCard, table: 'payment_info' },
+      { id: 'custom_forms', label: 'Custom Forms', icon: FormText, table: 'custom_forms' },
     ],
   },
 ];
@@ -88,8 +94,9 @@ export function AdminDashboard() {
         'newsletter_subscribers', 'join_submissions', 'volunteer_submissions',
         'partner_submissions', 'contact_submissions', 'donations',
         'course_applications', 'merch_orders', 'payment_submissions',
-        'programs', 'courses', 'cases', 'blog_posts', 'merch', 'merch_images', 'testimonials',
-        'gallery_events', 'gallery_photos',
+        'programs', 'courses', 'cases', 'blog_posts', 'merch', 'testimonials',
+        'gallery_events', 'gallery_photos', 'patrons', 'patron_submissions',
+        'custom_forms', 'custom_form_submissions',
       ];
       const counts: Record<string, number> = {};
       await Promise.all(
@@ -123,7 +130,8 @@ export function AdminDashboard() {
             { key: 'pillar', label: 'Pillar', editable: true, type: 'select', options: ['Educate', 'Empower', 'Advocate', 'Wellness', 'General'] },
             { key: 'summary', label: 'Summary', editable: true, type: 'textarea', full: true },
             { key: 'description', label: 'Description', editable: true, type: 'textarea', full: true },
-            { key: 'image_url', label: 'Image', editable: true, type: 'image', full: true },
+            { key: 'image_url', label: 'Main Image', editable: true, type: 'image', full: true },
+            { key: 'media', label: 'Additional Images', type: 'media', full: true, media: { table: 'program_media', foreignKey: 'program_id', allowVideo: true, allowCaption: true, coverField: 'image_url' } },
             { key: 'icon', label: 'Icon', editable: true, type: 'select', options: ['BookOpen', 'Sparkles', 'Scale', 'Users', 'Heart', 'GraduationCap'] },
             { key: 'sort_order', label: 'Order', editable: true, type: 'number' },
             { key: 'published', label: 'Published', editable: true, type: 'boolean' },
@@ -140,7 +148,8 @@ export function AdminDashboard() {
             { key: 'instructor', label: 'Instructor', editable: true },
             { key: 'summary', label: 'Summary', editable: true, type: 'textarea', full: true },
             { key: 'description', label: 'Description', editable: true, type: 'textarea', full: true },
-            { key: 'image_url', label: 'Image', editable: true, type: 'image', full: true },
+            { key: 'image_url', label: 'Main Image', editable: true, type: 'image', full: true },
+            { key: 'media', label: 'Additional Images', type: 'media', full: true, media: { table: 'course_media', foreignKey: 'course_id', allowVideo: true, allowCaption: true, coverField: 'image_url' } },
             { key: 'duration', label: 'Duration', editable: true },
             { key: 'level', label: 'Level', editable: true, type: 'select', options: ['Beginner', 'Intermediate', 'Advanced'] },
             { key: 'enrolled', label: 'Enrolled', editable: true, type: 'number' },
@@ -193,6 +202,7 @@ export function AdminDashboard() {
             { key: 'name', label: 'Name', editable: true },
             { key: 'description', label: 'Description', editable: true, type: 'textarea', full: true },
             { key: 'image_url', label: 'Image', editable: true, type: 'image', full: true },
+            { key: 'media', label: 'Additional Images', type: 'media', full: true, media: { table: 'merch_images', foreignKey: 'merch_id', allowVideo: true, allowCaption: true, coverField: 'image_url' } },
             { key: 'price', label: 'Price', editable: true },
             { key: 'category', label: 'Category', editable: true },
             { key: 'sizes', label: 'Sizes (comma-separated)', editable: true, full: true },
@@ -258,6 +268,7 @@ export function AdminDashboard() {
             { key: 'title', label: 'Title', editable: true },
             { key: 'description', label: 'Description', editable: true, type: 'textarea', full: true },
             { key: 'cover_image_url', label: 'Cover Image', editable: true, type: 'image', full: true },
+            { key: 'media', label: 'Event Photos & Videos', type: 'media', full: true, media: { table: 'gallery_photos', foreignKey: 'event_id', allowVideo: true, allowCaption: true, coverField: 'cover_image_url' } },
             { key: 'event_date', label: 'Event Date', editable: true },
             { key: 'event_location', label: 'Location', editable: true },
             { key: 'event_type', label: 'Type', editable: true, type: 'select', options: ['Outreach', 'Workshop', 'Conference', 'Seminar', 'Fundraiser', 'Community', 'Other'] },
@@ -267,14 +278,18 @@ export function AdminDashboard() {
           ]}
         />;
 
-      case 'merch_images':
-        return <AdminTable<MerchImage> key="merch_images"
-          table="merch_images" title="Merch Images" eyebrow="Content Management" orderBy="sort_order"
-          emptyFields={{ merch_id: '', image_url: '', sort_order: 0 }}
+      case 'patrons':
+        return <AdminTable<Patron> key="patrons"
+          table="patrons" title="Patrons & Trustees" eyebrow="Content Management" orderBy="sort_order"
+          emptyFields={{ name: '', title: '', role: 'patron', bio: '', portrait_url: '', published: true, sort_order: 0 }}
           columns={[
-            { key: 'merch_id', label: 'Merch ID', editable: true },
-            { key: 'image_url', label: 'Image', editable: true, type: 'image', full: true },
+            { key: 'name', label: 'Name', editable: true },
+            { key: 'title', label: 'Title', editable: true },
+            { key: 'role', label: 'Role', editable: true, type: 'select', options: ['patron', 'trustee'] },
+            { key: 'bio', label: 'Biography', editable: true, type: 'textarea', full: true },
+            { key: 'portrait_url', label: 'Portrait', editable: true, type: 'image', full: true },
             { key: 'sort_order', label: 'Order', editable: true, type: 'number' },
+            { key: 'published', label: 'Published', editable: true, type: 'boolean' },
           ]}
         />;
 
@@ -413,6 +428,41 @@ export function AdminDashboard() {
           ]}
         />;
 
+      case 'patron_sub':
+        return <AdminTable<PatronSubmission> key="patron_sub"
+          table="patron_submissions" title="Patron & Trustee Applications" eyebrow="Submissions"
+          emptyFields={{ full_name: '', email: '', phone: '', location: '', role_interest: '', occupation: '', motivation: '', experience: '', status: 'new' }}
+          columns={[
+            { key: 'full_name', label: 'Name' },
+            { key: 'email', label: 'Email' },
+            { key: 'phone', label: 'Phone' },
+            { key: 'location', label: 'Location' },
+            { key: 'role_interest', label: 'Role Interest' },
+            { key: 'occupation', label: 'Occupation' },
+            { key: 'motivation', label: 'Motivation', render: (r) => r.motivation ? (r.motivation.length > 50 ? r.motivation.slice(0, 50) + '...' : r.motivation) : '—' },
+            { key: 'status', label: 'Status', editable: true, type: 'select', options: statusOptions },
+            { key: 'created_at', label: 'Date' },
+          ]}
+        />;
+
+      case 'custom_forms':
+        return <CustomFormsAdmin />;
+
+      case 'custom_form_subs':
+        return <AdminTable<CustomFormSubmission> key="custom_form_subs"
+          table="custom_form_submissions" title="Custom Form Responses" eyebrow="Submissions"
+          emptyFields={{ form_id: '', form_title: '', answers: '', full_name: '', email: '', phone: '', status: 'new' }}
+          columns={[
+            { key: 'form_title', label: 'Form' },
+            { key: 'full_name', label: 'Name' },
+            { key: 'email', label: 'Email' },
+            { key: 'phone', label: 'Phone' },
+            { key: 'answers', label: 'Answers', render: (r) => r.answers ? (r.answers.length > 60 ? r.answers.slice(0, 60) + '...' : r.answers) : '—' },
+            { key: 'status', label: 'Status', editable: true, type: 'select', options: statusOptions },
+            { key: 'created_at', label: 'Date' },
+          ]}
+        />;
+
       case 'payment':
         return <AdminTable<PaymentInfo> key="payment"
           table="payment_info" title="Payment Information" eyebrow="Settings"
@@ -538,7 +588,7 @@ function Overview({ stats, loading, onNavigate }: {
     { label: 'Community Posts', value: stats['community_posts'], icon: Users, section: 'community' as Section },
     { label: 'Partners', value: stats['partners'], icon: Handshake, section: 'partners' as Section },
     { label: 'Gallery Events', value: stats['gallery_events'], icon: Images, section: 'gallery' as Section },
-    { label: 'Merch Images', value: stats['merch_images'], icon: ImageIcon, section: 'merch_images' as Section },
+    { label: 'Patrons', value: stats['patrons'], icon: Crown, section: 'patrons' as Section },
   ];
 
   return (

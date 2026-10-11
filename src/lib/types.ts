@@ -26,7 +26,13 @@ export type TableName =
   | 'course_sections'
   | 'course_media'
   | 'program_sections'
-  | 'program_media';
+  | 'program_media'
+  | 'patrons'
+  | 'patron_submissions'
+  | 'custom_forms'
+  | 'custom_form_questions'
+  | 'custom_form_submissions'
+  | 'email_log';
 
 export interface Program {
   id: string;
@@ -38,6 +44,7 @@ export interface Program {
   icon?: string | null;
   published: boolean;
   sort_order: number;
+  display_id?: number;
   created_at?: string;
   updated_at?: string;
   objectives?: string | null;
@@ -62,6 +69,7 @@ export interface Course {
   enrolled: number;
   published: boolean;
   sort_order: number;
+  display_id?: number;
   created_at?: string;
   updated_at?: string;
   is_paid: boolean;
@@ -117,6 +125,7 @@ export interface CaseStory {
   impact?: string | null;
   published: boolean;
   sort_order: number;
+  display_id?: number;
   created_at?: string;
   updated_at?: string;
 }
@@ -134,6 +143,7 @@ export interface BlogPost {
   published: boolean;
   featured: boolean;
   sort_order: number;
+  display_id?: number;
   created_at?: string;
   updated_at?: string;
 }
@@ -150,6 +160,7 @@ export interface Merch {
   in_stock: boolean;
   published: boolean;
   sort_order: number;
+  display_id?: number;
   created_at?: string;
   updated_at?: string;
   currency?: string | null;
@@ -377,6 +388,7 @@ export interface GalleryEvent {
   additional_info?: string | null;
   published: boolean;
   sort_order: number;
+  display_id?: number;
   created_at?: string;
   updated_at?: string;
 }
@@ -431,4 +443,75 @@ export interface PaymentSubmission {
   merch_id?: string | null;
   application_id?: string | null;
   order_id?: string | null;
+}
+
+export interface Patron {
+  id: string;
+  name: string;
+  title?: string | null;
+  role: string;
+  bio?: string | null;
+  portrait_url?: string | null;
+  published: boolean;
+  sort_order: number;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface PatronSubmission {
+  id: string;
+  full_name: string;
+  email: string;
+  phone?: string | null;
+  location?: string | null;
+  role_interest?: string | null;
+  occupation?: string | null;
+  motivation?: string | null;
+  experience?: string | null;
+  status: string;
+  created_at?: string;
+}
+
+export interface CustomForm {
+  id: string;
+  title: string;
+  description?: string | null;
+  header_text?: string | null;
+  slug?: string | null;
+  published: boolean;
+  sort_order: number;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface CustomFormQuestion {
+  id: string;
+  form_id: string;
+  label: string;
+  field_type: string;
+  required: boolean;
+  sort_order: number;
+  created_at?: string;
+}
+
+export interface CustomFormSubmission {
+  id: string;
+  form_id: string;
+  form_title?: string | null;
+  answers?: string | null;
+  full_name?: string | null;
+  email?: string | null;
+  phone?: string | null;
+  status: string;
+  created_at?: string;
+}
+
+export interface EmailLog {
+  id: string;
+  recipient: string;
+  subject: string;
+  body?: string | null;
+  form_type?: string | null;
+  status: string;
+  created_at?: string;
 }
