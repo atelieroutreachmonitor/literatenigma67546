@@ -1,0 +1,1 @@
+ALTER TABLE gallery_photos ADD COLUMN IF NOT EXISTS media_type text DEFAULT 'image';
