@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Handshake, ArrowRight, CheckCircle2 } from 'lucide-react';
 import { PageHero, Button } from '@/components/ui';
 import { Link } from '@/components/Link';
 import { useScrollReveal } from '@/lib/router';
 import { supabase } from '@/lib/supabase';
 import { Input, TextArea } from '@/pages/CoursesPage';
+import type { Partner } from '@/lib/types';
 
 const partnerImage = 'https://images.pexels.com/photos/8761551/pexels-photo-8761551.jpeg?auto=compress&cs=tinysrgb&h=900&w=1600';
 
@@ -14,6 +15,18 @@ export function PartnerPage() {
     organization: '', contact_name: '', email: '', phone: '', website: '', partnership_type: '', message: '',
   });
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [partners, setPartners] = useState<Partner[]>([]);
+
+  useEffect(() => {
+    (async () => {
+      const { data } = await supabase
+        .from('partners')
+        .select('*')
+        .eq('published', true)
+        .order('sort_order', { ascending: true });
+      if (data) setPartners(data as Partner[]);
+    })();
+  }, []);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,6 +39,8 @@ export function PartnerPage() {
     }
   };
 
+  const logos = partners.filter((p) => p.logo_url);
+
   return (
     <div>
       <PageHero
@@ -34,6 +49,34 @@ export function PartnerPage() {
         subtitle="Together we can amplify our impact. Partner with Women Elevation and Empowerment Initiative to empower more women and girls."
         image={partnerImage}
       />
+
+      {/* Partner Logos Carousel */}
+      {logos.length > 0 && (
+        <section className="py-12 md:py-16 bg-white border-b border-plum-50">
+          <div className="max-w-7xl mx-auto px-4 md:px-6">
+            <p className="font-spartan text-xs uppercase tracking-[0.3em] text-gold-500 font-semibold text-center mb-8 animate-on-scroll">
+              Organizations We Partner With
+            </p>
+            <div className="flex items-center gap-8 md:gap-12 overflow-x-auto scrollbar-none pb-2 animate-on-scroll">
+              {logos.map((partner) => (
+                <a
+                  key={partner.id}
+                  href={partner.website || undefined}
+                  target={partner.website ? '_blank' : undefined}
+                  rel="noopener noreferrer"
+                  className="flex-shrink-0 group"
+                >
+                  <div className="h-16 md:h-20 w-32 md:w-44 flex items-center justify-center p-2 rounded-xl hover:bg-plum-50 transition-colors">
+                    {partner.logo_url && (
+                      <img src={partner.logo_url} alt={partner.name} className="max-h-full max-w-full object-contain opacity-60 group-hover:opacity-100 transition-opacity" />
+                    )}
+                  </div>
+                </a>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       <section className="py-20 md:py-28 bg-cream-50">
         <div className="max-w-7xl mx-auto px-4 md:px-6">

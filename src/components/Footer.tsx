@@ -120,6 +120,7 @@ export function Footer() {
                   { label: 'Cases', path: '/cases' },
                   { label: 'Blog', path: '/blog' },
                   { label: 'Gallery', path: '/gallery' },
+                  { label: 'Patrons', path: '/patrons' },
                 ].map((item) => (
                   <li key={item.path}>
                     <Link to={item.path} className="font-lato text-sm text-cream-200/70 hover:text-gold-400 transition-colors">
@@ -139,6 +140,7 @@ export function Footer() {
                   { label: 'Courses', path: '/courses' },
                   { label: 'Merch', path: '/merch' },
                   { label: 'Donate', path: '/donate' },
+                  { label: 'Newsletter', path: '/newsletter' },
                 ].map((item) => (
                   <li key={item.path}>
                     <Link to={item.path} className="font-lato text-sm text-cream-200/70 hover:text-gold-400 transition-colors">

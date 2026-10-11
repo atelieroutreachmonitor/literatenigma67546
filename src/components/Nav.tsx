@@ -16,6 +16,7 @@ const navItems = [
   { label: 'Donate', path: '/donate' },
   { label: 'Partner', path: '/partner' },
   { label: 'Volunteer', path: '/volunteer' },
+  { label: 'Patrons', path: '/patrons' },
   { label: 'Contact', path: '/contact' },
 ];
 

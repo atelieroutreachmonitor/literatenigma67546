@@ -1,10 +1,9 @@
-import { useState, useEffect } from 'react';
-import { CreditCard, Upload, CheckCircle2, X, Heart, ArrowRight, Lock } from 'lucide-react';
-import { supabase } from '@/lib/supabase';
+import { useState } from 'react';
+import { CreditCard, Upload, CheckCircle2, X, Heart, ArrowRight } from 'lucide-react';
 import { useScrollReveal } from '@/lib/router';
 import { Input } from '@/pages/CoursesPage';
 import { Button } from '@/components/ui';
-import { formatMoney } from '@/lib/constants';
+import { supabase } from '@/lib/supabase';
 
 export function PaymentPage() {
   useScrollReveal();
@@ -13,41 +12,12 @@ export function PaymentPage() {
     email: '',
     phone: '',
     reference_number: '',
+    amount: '',
+    purpose: '',
     message: '',
   });
   const [receiptFile, setReceiptFile] = useState<File | null>(null);
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
-  const [pendingPayments, setPendingPayments] = useState<Array<{
-    id: string; amount: string; source: string; full_name: string; email: string;
-    course_id?: string | null; merch_id?: string | null;
-  }>>([]);
-
-  useEffect(() => {
-    (async () => {
-      const { data } = await supabase
-        .from('payment_submissions')
-        .select('*')
-        .eq('status', 'pending')
-        .order('created_at', { ascending: false })
-        .limit(5);
-      if (data) {
-        const coursePayments = (data as any[]).filter((p) => p.source === 'course' || p.source === 'merch');
-        if (coursePayments.length > 0) {
-          setPendingPayments(coursePayments);
-          setForm({
-            full_name: coursePayments[0].full_name || '',
-            email: coursePayments[0].email || '',
-            phone: '',
-            reference_number: '',
-            message: '',
-          });
-        }
-      }
-    })();
-  }, []);
-
-  const lockedAmount = pendingPayments.length > 0 ? pendingPayments[0].amount : null;
-  const paymentSource = pendingPayments.length > 0 ? pendingPayments[0].source : null;
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -65,42 +35,19 @@ export function PaymentPage() {
       }
     }
 
-    if (lockedAmount && pendingPayments[0]) {
-      const { error } = await supabase
-        .from('payment_submissions')
-        .update({
-          full_name: form.full_name,
-          email: form.email,
-          phone: form.phone,
-          reference_number: form.reference_number,
-          message: form.message,
-          receipt_url,
-          status: 'pending_verification',
-        })
-        .eq('id', pendingPayments[0].id);
+    const { error } = await supabase.from('payment_submissions').insert({
+      ...form,
+      receipt_url,
+      source: 'general',
+      status: 'pending',
+    });
 
-      if (error) {
-        setStatus('error');
-      } else {
-        setStatus('success');
-        setPendingPayments([]);
-      }
+    if (error) {
+      setStatus('error');
     } else {
-      const { error } = await supabase.from('payment_submissions').insert({
-        ...form,
-        amount: '',
-        receipt_url,
-        source: 'general',
-        status: 'pending',
-      });
-
-      if (error) {
-        setStatus('error');
-      } else {
-        setStatus('success');
-        setForm({ full_name: '', email: '', phone: '', reference_number: '', message: '' });
-        setReceiptFile(null);
-      }
+      setStatus('success');
+      setForm({ full_name: '', email: '', phone: '', reference_number: '', amount: '', purpose: '', message: '' });
+      setReceiptFile(null);
     }
   };
 
@@ -148,24 +95,6 @@ export function PaymentPage() {
                 </span>
               </div>
             </div>
-
-            {/* Amount Due (locked) */}
-            {lockedAmount && (
-              <div className="mt-6 bg-plum-50 border border-plum-200 rounded-2xl p-5">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="font-spartan text-xs uppercase tracking-wider text-plum-500 font-semibold mb-1">Amount Due</p>
-                    <p className="font-playfair text-3xl font-bold text-plum-700">{lockedAmount}</p>
-                    {paymentSource === 'course' && <p className="font-lato text-xs text-charcoal-500 mt-1">Course Payment</p>}
-                    {paymentSource === 'merch' && <p className="font-lato text-xs text-charcoal-500 mt-1">Merchandise Order</p>}
-                  </div>
-                  <div className="flex items-center gap-1.5 text-plum-500">
-                    <Lock className="w-4 h-4" />
-                    <span className="font-lato text-xs font-semibold">Locked</span>
-                  </div>
-                </div>
-              </div>
-            )}
 
             <div className="mt-6 bg-gold-50 border border-gold-200 rounded-2xl p-5">
               <p className="font-lato text-xs text-charcoal-600 leading-relaxed">
@@ -234,27 +163,8 @@ export function PaymentPage() {
                 <Input label="Full Name" value={form.full_name} onChange={(v) => setForm({ ...form, full_name: v })} required />
                 <Input label="Email" type="email" value={form.email} onChange={(v) => setForm({ ...form, email: v })} required />
                 <Input label="Phone" value={form.phone} onChange={(v) => setForm({ ...form, phone: v })} />
-
-                {lockedAmount ? (
-                  <div>
-                    <label className="block font-lato text-sm font-medium text-charcoal-700 mb-1.5">
-                      Amount Due
-                    </label>
-                    <div className="relative">
-                      <span className="absolute left-4 top-1/2 -translate-y-1/2 font-lato text-sm font-semibold text-charcoal-500 flex items-center gap-1">
-                        <Lock className="w-3 h-3" />
-                      </span>
-                      <input
-                        type="text"
-                        value={lockedAmount}
-                        readOnly
-                        className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-plum-200 bg-plum-50 font-lato text-sm font-bold text-plum-700 cursor-not-allowed"
-                      />
-                    </div>
-                    <p className="font-lato text-xs text-charcoal-400 mt-1">This amount is automatically set from your course/product and cannot be edited.</p>
-                  </div>
-                ) : null}
-
+                <Input label="Amount (NGN)" value={form.amount} onChange={(v) => setForm({ ...form, amount: v })} placeholder="e.g. 5,000" required />
+                <Input label="Purpose" value={form.purpose} onChange={(v) => setForm({ ...form, purpose: v })} placeholder="e.g. Donation, Course fee, Merch order" />
                 <Input label="Reference Number" value={form.reference_number} onChange={(v) => setForm({ ...form, reference_number: v })} placeholder="Optional" />
 
                 <div>

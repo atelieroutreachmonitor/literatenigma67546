@@ -1,4 +1,4 @@
-import { Target, Eye, Heart, Globe, Users, Shield, ArrowRight } from 'lucide-react';
+import { Target, Eye, Heart, Globe, Users, Shield, ArrowRight, Crown } from 'lucide-react';
 import { PageHero, SectionTitle } from '@/components/ui';
 import { Link } from '@/components/Link';
 import { useScrollReveal } from '@/lib/router';
@@ -127,6 +127,35 @@ export function AboutPage() {
                 </p>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Patrons & Trustees CTA */}
+      <section className="py-20 md:py-28 bg-white">
+        <div className="max-w-7xl mx-auto px-4 md:px-6">
+          <div className="text-center mb-12 md:mb-16 animate-on-scroll">
+            <p className="font-spartan text-xs md:text-sm uppercase tracking-[0.3em] text-gold-500 font-semibold mb-3">
+              Leadership Circle
+            </p>
+            <h2 className="font-playfair text-3xl md:text-4xl lg:text-5xl font-bold text-plum-700">
+              Our Patrons &amp; Trustees
+            </h2>
+          </div>
+          <div className="max-w-3xl mx-auto text-center animate-on-scroll">
+            <div className="w-14 h-14 rounded-2xl bg-gold-400 text-plum-900 flex items-center justify-center mb-6 mx-auto">
+              <Crown className="w-7 h-7" />
+            </div>
+            <p className="font-lato text-charcoal-600 leading-relaxed text-base md:text-lg mb-8">
+              Our patrons and trustees are distinguished individuals who champion our mission, provide strategic guidance, and help us reach more women and girls around the world. They are the backbone of our movement.
+            </p>
+            <Link
+              to="/patrons"
+              className="inline-flex items-center gap-2 px-8 py-3.5 bg-plum-600 hover:bg-plum-700 text-white font-lato font-semibold rounded-full transition-all hover:shadow-xl hover:-translate-y-0.5"
+            >
+              Meet Our Patrons
+              <ArrowRight className="w-5 h-5" />
+            </Link>
           </div>
         </div>
       </section>

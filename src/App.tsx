@@ -19,6 +19,9 @@ import { JoinPage } from '@/pages/JoinPage';
 import { GalleryPage } from '@/pages/GalleryPage';
 import { PaymentPage } from '@/pages/PaymentPage';
 import { UnsubscribePage } from '@/pages/UnsubscribePage';
+import { NewsletterPage } from '@/pages/NewsletterPage';
+import { PatronsPage } from '@/pages/PatronsPage';
+import { CustomFormPage } from '@/pages/CustomFormPage';
 import { AdminLogin } from '@/pages/admin/AdminLogin';
 import { AdminDashboard } from '@/pages/admin/AdminDashboard';
 
@@ -44,6 +47,7 @@ function App() {
   const merchMatch = matchRoute('/merch/:id', path);
   const programMatch = matchRoute('/programs/:id', path);
   const galleryMatch = matchRoute('/gallery/:id', path);
+  const formMatch = matchRoute('/forms/:slug', path);
 
   const publicPages: Record<string, React.ComponentType> = {
     '/': HomePage,
@@ -62,6 +66,8 @@ function App() {
     '/gallery': GalleryPage,
     '/payment': PaymentPage,
     '/unsubscribe': UnsubscribePage,
+    '/newsletter': NewsletterPage,
+    '/patrons': PatronsPage,
   };
 
   let Page: React.ComponentType<{ routeParams?: Record<string, string> }> = HomePage;
@@ -79,6 +85,9 @@ function App() {
   } else if (galleryMatch) {
     Page = GalleryPage;
     routeParams = galleryMatch;
+  } else if (formMatch) {
+    Page = CustomFormPage;
+    routeParams = formMatch;
   } else {
     Page = publicPages[path] || HomePage;
   }

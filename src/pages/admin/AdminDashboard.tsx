@@ -3,19 +3,20 @@ import {
   LayoutDashboard, BookOpen, GraduationCap, FileText, Newspaper,
   ShoppingBag, Users, Handshake, Mail, Heart, UserPlus, Briefcase, Phone,
   LogOut, Menu, X, ChevronRight, Bell, CreditCard, Quote, Images, Image as ImageIcon,
-  Crown, FormText, Mail as MailIcon
+  Crown, ClipboardList, Mail as MailIcon
 } from 'lucide-react';
 import { useAuth } from '@/lib/auth';
 import { useRouter } from '@/lib/router';
 import { supabase } from '@/lib/supabase';
 import { AdminTable } from '@/pages/admin/AdminTable';
 import type {
-  Program, Course, CaseStory, BlogPost, Merch, MerchImage, CommunityPost, Partner,
+  Program, Course, CaseStory, BlogPost, Merch, CommunityPost, Partner,
   NewsletterSubscriber, JoinSubmission, VolunteerSubmission, PartnerSubmission,
   ContactSubmission, Donation, CourseApplication, MerchOrder,
-  PaymentInfo, PaymentSubmission, Testimonial, GalleryEvent, GalleryPhoto,
-  Patron, PatronSubmission, CustomForm, CustomFormSubmission,
+  PaymentInfo, PaymentSubmission, Testimonial, GalleryEvent,
+  Patron, PatronSubmission, CustomFormSubmission,
 } from '@/lib/types';
+import { CustomFormsAdmin } from '@/pages/admin/CustomFormsAdmin';
 
 type Section =
   | 'overview'
@@ -64,14 +65,14 @@ const navGroups: NavGroup[] = [
       { id: 'merch_orders', label: 'Merch Orders', icon: ShoppingBag, table: 'merch_orders' },
       { id: 'payment_submissions', label: 'Payment Submissions', icon: CreditCard, table: 'payment_submissions' },
       { id: 'patron_sub', label: 'Patron Applications', icon: Crown, table: 'patron_submissions' },
-      { id: 'custom_form_subs', label: 'Custom Form Responses', icon: FormText, table: 'custom_form_submissions' },
+      { id: 'custom_form_subs', label: 'Custom Form Responses', icon: ClipboardList, table: 'custom_form_submissions' },
     ],
   },
   {
     label: 'Settings',
     items: [
       { id: 'payment', label: 'Payment Info', icon: CreditCard, table: 'payment_info' },
-      { id: 'custom_forms', label: 'Custom Forms', icon: FormText, table: 'custom_forms' },
+      { id: 'custom_forms', label: 'Custom Forms', icon: ClipboardList, table: 'custom_forms' },
     ],
   },
 ];
