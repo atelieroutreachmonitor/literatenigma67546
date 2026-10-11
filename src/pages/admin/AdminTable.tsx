@@ -190,7 +190,7 @@ export function AdminTable<T extends { id: string }>({
     ? rows.filter((row) => JSON.stringify(row).toLowerCase().includes(search.toLowerCase()))
     : rows;
 
-  const editableColumns = columns.filter((c) => c.editable);
+  const editableColumns = columns.filter((c) => c.editable || c.type === 'media' || c.type === 'heading');
 
   const exportCSV = () => {
     const headers = listColumns.map((c) => c.label);
