@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Plus, Trash2, Save, X, RefreshCw, ChevronDown, ChevronUp, Copy, ExternalLink } from 'lucide-react';
+import { Plus, Trash2, Save, X, RefreshCw, Copy, ExternalLink } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { Spinner } from '@/components/ui';
 import type { CustomForm, CustomFormQuestion } from '@/lib/types';
@@ -15,7 +15,6 @@ export function CustomFormsAdmin() {
   const [questions, setQuestions] = useState<Partial<CustomFormQuestion>[]>([]);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [expandedId, setExpandedId] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -245,10 +244,10 @@ export function CustomFormsAdmin() {
           {forms.map((form) => (
             <div key={form.id} className="bg-white rounded-2xl border border-plum-100 overflow-hidden">
               <div className="flex items-center justify-between p-4">
-                <button onClick={() => setExpandedId(expandedId === form.id ? null : form.id)} className="flex-1 text-left">
+                <div className="flex-1 text-left">
                   <h3 className="font-playfair text-lg font-bold text-plum-700">{form.title}</h3>
                   {form.description && <p className="font-lato text-sm text-charcoal-500 mt-0.5">{form.description}</p>}
-                </button>
+                </div>
                 <div className="flex items-center gap-2">
                   <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${form.published ? 'bg-green-100 text-green-700' : 'bg-charcoal-100 text-charcoal-500'}`}>
                     {form.published ? 'Published' : 'Draft'}
@@ -260,16 +259,14 @@ export function CustomFormsAdmin() {
                   <button onClick={() => deleteForm(form)} className="font-lato text-xs font-semibold text-red-500 hover:text-red-600">Delete</button>
                 </div>
               </div>
-              {expandedId === form.id && (
-                <div className="border-t border-plum-100 p-4 bg-cream-50">
-                  <p className="font-lato text-xs text-charcoal-500 mb-2">Share this link to collect responses:</p>
-                  <div className="flex items-center gap-2">
-                    <input readOnly value={shareUrl(form)} className="flex-1 px-3 py-2 rounded-lg border border-plum-200 bg-white font-lato text-xs text-charcoal-600" />
-                    <button onClick={() => { navigator.clipboard.writeText(shareUrl(form)); }} className="p-2 bg-plum-50 text-plum-600 rounded-lg hover:bg-plum-100" title="Copy"><Copy className="w-4 h-4" /></button>
-                    <a href={shareUrl(form)} target="_blank" rel="noopener noreferrer" className="p-2 bg-plum-50 text-plum-600 rounded-lg hover:bg-plum-100" title="Open"><ExternalLink className="w-4 h-4" /></a>
-                  </div>
+              <div className="border-t border-plum-100 p-4 bg-cream-50">
+                <p className="font-lato text-xs text-charcoal-500 mb-2">Share this link to collect responses:</p>
+                <div className="flex items-center gap-2">
+                  <input readOnly value={shareUrl(form)} onClick={(e) => (e.target as HTMLInputElement).select()} className="flex-1 px-3 py-2 rounded-lg border border-plum-200 bg-white font-lato text-xs text-charcoal-600" />
+                  <button onClick={() => { navigator.clipboard.writeText(shareUrl(form)); }} className="p-2 bg-plum-50 text-plum-600 rounded-lg hover:bg-plum-100" title="Copy"><Copy className="w-4 h-4" /></button>
+                  <a href={shareUrl(form)} target="_blank" rel="noopener noreferrer" className="p-2 bg-plum-50 text-plum-600 rounded-lg hover:bg-plum-100" title="Open"><ExternalLink className="w-4 h-4" /></a>
                 </div>
-              )}
+              </div>
             </div>
           ))}
         </div>

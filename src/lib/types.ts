@@ -511,7 +511,9 @@ export interface EmailLog {
   recipient: string;
   subject: string;
   body?: string | null;
+  html_body?: string | null;
   form_type?: string | null;
   status: string;
+  resend_id?: string | null;
   created_at?: string;
 }

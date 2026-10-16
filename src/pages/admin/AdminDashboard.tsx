@@ -17,6 +17,7 @@ import type {
   Patron, PatronSubmission, CustomFormSubmission,
 } from '@/lib/types';
 import { CustomFormsAdmin } from '@/pages/admin/CustomFormsAdmin';
+import { EmailHistory } from '@/pages/admin/EmailHistory';
 
 type Section =
   | 'overview'
@@ -25,7 +26,8 @@ type Section =
   | 'newsletter' | 'join' | 'volunteer' | 'partner_sub' | 'contact' | 'donations'
   | 'course_app' | 'merch_orders' | 'payment_submissions'
   | 'payment'
-  | 'patrons' | 'patron_sub' | 'custom_forms' | 'custom_form_subs';
+  | 'patrons' | 'patron_sub' | 'custom_forms' | 'custom_form_subs'
+  | 'email_history';
 
 interface NavGroup {
   label: string;
@@ -73,6 +75,7 @@ const navGroups: NavGroup[] = [
     items: [
       { id: 'payment', label: 'Payment Info', icon: CreditCard, table: 'payment_info' },
       { id: 'custom_forms', label: 'Custom Forms', icon: ClipboardList, table: 'custom_forms' },
+      { id: 'email_history', label: 'Email History', icon: MailIcon, table: 'email_log' },
     ],
   },
 ];
@@ -97,7 +100,7 @@ export function AdminDashboard() {
         'course_applications', 'merch_orders', 'payment_submissions',
         'programs', 'courses', 'cases', 'blog_posts', 'merch', 'testimonials',
         'gallery_events', 'gallery_photos', 'patrons', 'patron_submissions',
-        'custom_forms', 'custom_form_submissions',
+        'custom_forms', 'custom_form_submissions', 'email_log',
       ];
       const counts: Record<string, number> = {};
       await Promise.all(
@@ -448,6 +451,9 @@ export function AdminDashboard() {
 
       case 'custom_forms':
         return <CustomFormsAdmin />;
+
+      case 'email_history':
+        return <EmailHistory />;
 
       case 'custom_form_subs':
         return <AdminTable<CustomFormSubmission> key="custom_form_subs"
