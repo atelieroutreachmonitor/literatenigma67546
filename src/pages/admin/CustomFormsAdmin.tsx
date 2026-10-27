@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Plus, Trash2, Save, X, RefreshCw, Copy, ExternalLink } from 'lucide-react';
+import { Plus, Trash2, Save, X, RefreshCw, Copy, ExternalLink, ChevronUp, ChevronDown } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { Spinner } from '@/components/ui';
 import type { CustomForm, CustomFormQuestion } from '@/lib/types';
