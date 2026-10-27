@@ -193,7 +193,9 @@ function GalleryDetailPage({ eventId }: { eventId: string }) {
                   </div>
                 )}
                 {item.caption && (
-                  <p className="font-lato text-xs text-charcoal-600 p-3 line-clamp-2">{item.caption}</p>
+                  <div className="p-3 bg-cream-50 border-t border-plum-100">
+                    <p className="font-lato text-xs text-charcoal-700 leading-relaxed">{item.caption}</p>
+                  </div>
                 )}
               </div>
             ))}
@@ -234,7 +236,9 @@ function GalleryDetailPage({ eventId }: { eventId: string }) {
             </>
           )}
           {mediaItems[lightboxIndex].caption && (
-            <p className="absolute bottom-6 left-0 right-0 text-center font-lato text-sm text-cream-100">{mediaItems[lightboxIndex].caption}</p>
+            <div className="absolute bottom-0 left-0 right-0 bg-plum-950/80 p-4">
+              <p className="text-center font-lato text-sm text-cream-100 leading-relaxed">{mediaItems[lightboxIndex].caption}</p>
+            </div>
           )}
         </div>
       )}

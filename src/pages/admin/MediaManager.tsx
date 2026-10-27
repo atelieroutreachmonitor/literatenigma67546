@@ -157,13 +157,13 @@ export function MediaManager({
                 <IconBtn label="Delete" onClick={() => remove(i)} danger><Trash2 className="h-3.5 w-3.5" /></IconBtn>
               </div>
               {allowCaption && (
-                <input
-                  type="text"
+                <textarea
                   value={item.caption ?? ''}
                   onChange={(e) => setCaption(i, e.target.value)}
-                  placeholder="Short description"
+                  placeholder="Image description (shown on gallery page)"
                   aria-label={`Description for media ${i + 1}`}
-                  className="w-full border-t border-plum-100 bg-white px-2 py-1.5 font-lato text-xs text-charcoal-800 focus:outline-none"
+                  rows={2}
+                  className="w-full border-t border-plum-100 bg-white px-2 py-1.5 font-lato text-xs text-charcoal-800 focus:outline-none resize-none"
                 />
               )}
             </li>
